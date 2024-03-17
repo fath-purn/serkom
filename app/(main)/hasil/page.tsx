@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Footer from "@/app/ui/footer";
-import Form from "@/app/ui/form";
+import Form from "@/app/ui/form-hasil";
 
 export const metadata: Metadata = {
-  title: "Beasiswa",
+  title: "Hasil",
 };
 
 export default function Page({
@@ -20,11 +20,11 @@ export default function Page({
       <div className="flex justify-center pt-10 bg-white">
         <div className="w-[80%]">
           <h2 className="text-6xl font-semibold text-center">
-            Daftar <span className="text-[#1D24CA]">Beasiswa</span>
+            Hasil <span className="text-[#1D24CA]">Beasiswa</span>
           </h2>
-        <div>
-          <Form search={search} />
-        </div>
+          <div>
+            <Form search={search} />
+          </div>
         </div>
       </div>
       <Footer />
