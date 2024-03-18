@@ -3,9 +3,10 @@
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { ButtonForm } from "@/app/ui/button";
 import { useFormState, useFormStatus } from "react-dom";
-import { formSubmitHandlerHotel } from "@/app/utils/actions";
+import { formSubmitHandlerMahasiswa } from "@/app/utils/actions";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import clsx from "clsx";
 import Search from "@/app/ui/search";
 
 interface Semester {
@@ -18,21 +19,98 @@ interface Beasiswa {
   nama: string;
 }
 
-export default function LoginForm({search}:{search:string;}) {
-  const [code, action] = useFormState(formSubmitHandlerHotel, undefined);
+// fetch data nim
+async function getData({ search }: { search: string }) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/beasiswa?search=${search}`,
+    { cache: "no-store" }
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  const data = await res.json();
+  return data.data;
+}
+
+export default function LoginForm({ search }: { search: string }) {
+  const [code, action] = useFormState(formSubmitHandlerMahasiswa, undefined);
   const [ipk, setIpk] = useState<string>("0");
-  const [block, setBlock] = useState<boolean>(true);
-  const [namaDepan, setNamaDepan] = useState<string>();
-  const [namaBelakang, setNamaBelakang] = useState<string>();
-  const [email, setEmail] = useState<string>();
+  const [namaDepan, setNamaDepan] = useState<string>("");
+  const [namaBelakang, setNamaBelakang] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [noHp, setNoHp] = useState<number>(0);
   const [semester, setSemester] = useState<Semester[]>([]);
   const [beasiswa, setBeasiswa] = useState<Beasiswa[]>([]);
-  const [berkas, setBerkas] = useState<File>();
+  const [berkas, setBerkas] = useState<string>();
+  const [status, setStatus] = useState<string>();
+  const [statusAsli, setStatusAsli] = useState<string>();
+
+  // handle nim
+  useEffect(() => {
+    async function fetchData() {
+      const data = await getData({ search });
+      if (data) {
+        setIpk(data.nilai.ipk);
+        setNamaDepan(data.nama_depan);
+        setNamaBelakang(data.nama_belakang);
+        setEmail(data.email);
+        setSemester([{ id: data.semester, nama: data.semester }]);
+        setNoHp(data.no_hp.slice(2));
+        setBerkas(data.media[0].url);
+        setStatusAsli(data.status);
+
+        if (data.beasiswa === "akademik") {
+          setBeasiswa([{ id: 1, nama: "Akademik" }]);
+        } else if (data.beasiswa === "non_akademik") {
+          setBeasiswa([{ id: 1, nama: "Non-Akademik" }]);
+        }
+
+        switch (data.status) {
+          case "Belum_daftar":
+            setStatus("Belum Terdaftar");
+            break;
+          case "Pending":
+            setStatus("Belum di Verifikasi");
+            break;
+          case "Diterima":
+            setStatus("Diterima");
+            break;
+          case "Ditolak":
+            setStatus("Ditolak");
+            break;
+          default:
+            setStatus("404 Server Error")
+            break;
+        }
+      }
+    }
+
+    fetchData();
+  }, [search]);
 
   return (
     <form action={action} className="space-y-3 my-[40px]">
       <div className="flex-1 rounded border-spacing-10 border shadow px-6 pb-4 pt-8">
         <div className="w-full">
+          {/* Status pendaftaran */}
+          <div className="flex flex-col ">
+            <h5 className="text-lg md:text-xl font-medium tracking-wide">
+              STATUS PENDAFTARAN
+            </h5>
+            <p className={clsx(
+              ' text-white font-medium w-fit rounded shadow py-2 px-7 mt-3 tracking-wider', 
+              {
+                'bg-gray-500': statusAsli === "Belum_daftar",
+                'bg-yellow-500': statusAsli === "Pending",
+                'bg-green-500': statusAsli === "Diterima",
+                'bg-red-500': statusAsli === "Ditolak",
+              } 
+            )}>
+              {status}
+            </p>
+          </div>
           {/* nim */}
           <div>
             <label
@@ -41,7 +119,7 @@ export default function LoginForm({search}:{search:string;}) {
             >
               NIM
             </label>
-            <Search placeholder="NIM" />
+            <Search placeholder="NIM" search={search} />
             <input
               className="hidden"
               id="nim"
@@ -52,23 +130,24 @@ export default function LoginForm({search}:{search:string;}) {
             />
           </div>
           {/* nama depan nama belakang */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 md:gap-3">
             {/* nama depan */}
             <div>
               <label
                 className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-                htmlFor="nama-depan"
+                htmlFor="namaDepan"
               >
                 NAMA DEPAN
               </label>
               <div className="relative">
                 <input
                   className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-5 text-sm outline-2 placeholder:text-gray-500"
-                  id="nama-depan"
+                  id="namaDepan"
                   type="text"
-                  name="nama-depan"
+                  name="namaDepan"
                   required
                   disabled
+                  defaultValue={namaDepan}
                 />
               </div>
             </div>
@@ -77,18 +156,19 @@ export default function LoginForm({search}:{search:string;}) {
             <div>
               <label
                 className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-                htmlFor="nama-belakang"
+                htmlFor="namaBelakang"
               >
                 NAMA BELAKANG
               </label>
               <div className="relative">
                 <input
                   className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-5 text-sm outline-2 placeholder:text-gray-500"
-                  id="nama-belakang"
+                  id="namaBelakang"
                   type="text"
-                  name="nama-belakang"
+                  name="namaBelakang"
                   required
                   disabled
+                  defaultValue={namaBelakang}
                 />
               </div>
             </div>
@@ -109,6 +189,7 @@ export default function LoginForm({search}:{search:string;}) {
                 name="email"
                 required
                 disabled
+                defaultValue={email}
               />
             </div>
           </div>
@@ -116,18 +197,19 @@ export default function LoginForm({search}:{search:string;}) {
           <div>
             <label
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="no-hp"
+              htmlFor="noHp"
             >
               NO HP
             </label>
             <div className="relative">
               <input
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-14 text-sm outline-2 placeholder:text-gray-500"
-                id="no-hp"
+                id="noHp"
                 type="number"
-                name="no-hp"
+                name="noHp"
                 required
                 disabled
+                defaultValue={noHp}
               />
               <p className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 peer-focus:text-gray-900">
                 +62
@@ -148,7 +230,7 @@ export default function LoginForm({search}:{search:string;}) {
                 id="semester"
                 name="semester"
                 required
-                defaultValue={0}
+                defaultValue={1}
                 disabled
               >
                 <option value={0} disabled>
@@ -178,7 +260,7 @@ export default function LoginForm({search}:{search:string;}) {
                 name="ipk"
                 required
                 disabled
-                value={ipk}
+                defaultValue={ipk}
               />
             </div>
           </div>
@@ -196,7 +278,7 @@ export default function LoginForm({search}:{search:string;}) {
                 id="beasiswa"
                 name="beasiswa"
                 required
-                defaultValue={0}
+                defaultValue={1}
                 disabled
               >
                 <option value={0} disabled>
@@ -222,19 +304,21 @@ export default function LoginForm({search}:{search:string;}) {
               <input
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-5 text-sm outline-2 placeholder:text-gray-500"
                 id="berkas"
-                type="file"
+                type="text"
                 name="berkas"
-                required
-                accept=".pdf,.jpg,,.zip"
                 disabled
               />
+              <Link
+                href={berkas ? berkas : "/"}
+                target="blank"
+                className="text-sm absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 peer-focus:text-gray-900"
+              >
+                {berkas}
+              </Link>
             </div>
           </div>
         </div>
-        <div className="flex justify-end gap-3">
-          {/* <CancelButton /> */}
-          <LoginButton block={block} />
-        </div>
+        <div className="flex justify-end gap-3"></div>
         <div className="flex h-8 items-end space-x-1">
           {code !== undefined && (
             <>
@@ -247,22 +331,5 @@ export default function LoginForm({search}:{search:string;}) {
         </div>
       </div>
     </form>
-  );
-}
-
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
-}
-
-function LoginButton({ block }: { block: boolean }) {
-  const { pending } = useFormStatus();
-
-  return (
-    <ButtonForm
-      className="mt-4 bg-green-500 hover:bg-green-600 w-[15%] justify-center focus-visible:outline-green-500 active:bg-green-600"
-      aria-disabled={pending ? pending : block}
-    >
-      Daftar
-    </ButtonForm>
   );
 }

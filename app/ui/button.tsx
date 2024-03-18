@@ -23,7 +23,7 @@ export function Button({nama, link}:{nama:string; link:string}) {
     <div className="flex items-center">
       <Link
         href={link}
-        className="bg-blue-600 px-14 py-4 rounded shadow hover:bg-blue-700"
+        className="bg-blue-600 px-10 md:px-14 py-2 md:py-4 rounded shadow hover:bg-blue-700"
       >
         <p className="text-md text-white tracking-wider">{nama}</p>
       </Link>
@@ -38,7 +38,7 @@ export function ButtonForm({ children, className, ...rest }: ButtonProps) {
     <button
       {...rest}
       className={clsx(
-        'flex h-10 items-center rounded-lg bg-blue-500 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:bg-blue-600 aria-disabled:cursor-not-allowed aria-disabled:opacity-50',
+        'flex items-center rounded shadow bg-blue-500 w-full md:w-[15%] py-3 md:px-14 text-sm font-medium text-white transition-colors hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:bg-blue-600 aria-disabled:cursor-not-allowed aria-disabled:opacity-50',
         className,
       )}
     >

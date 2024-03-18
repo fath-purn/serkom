@@ -18,13 +18,13 @@ export default function Page({
   return (
     <main className="">
       <div className="flex justify-center pt-10 bg-white">
-        <div className="w-[80%]">
-          <h2 className="text-6xl font-semibold text-center">
+        <div className="w-[95%] md:w-[80%]">
+          <h2 className="text-4xl md:text-6xl font-semibold text-center">
             Daftar <span className="text-[#1D24CA]">Beasiswa</span>
           </h2>
-        <div>
-          <Form search={search} />
-        </div>
+          <div>
+            <Form search={search} />
+          </div>
         </div>
       </div>
       <Footer />

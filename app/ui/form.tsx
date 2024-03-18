@@ -3,7 +3,7 @@
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { ButtonForm } from "@/app/ui/button";
 import { useFormState, useFormStatus } from "react-dom";
-import { formSubmitHandlerHotel } from "@/app/utils/actions";
+import { formSubmitHandlerMahasiswa } from "@/app/utils/actions";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Search from "@/app/ui/search";
@@ -54,16 +54,48 @@ const beasiswa = [
   },
 ];
 
-export default function LoginForm({search}:{search:string;}) {
+// fetch data nim
+async function getData({ search }: { search: string }) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/nilai?search=${search}`,
+    { cache: "no-store" }
+  );
 
-  const [code, action] = useFormState(formSubmitHandlerHotel, undefined);
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  const data = await res.json();
+  return data.data;
+}
+
+export default function LoginForm({ search }: { search: string }) {
+  const [code, action] = useFormState(formSubmitHandlerMahasiswa, undefined);
   const [ipk, setIpk] = useState<string>("0");
   const [block, setBlock] = useState<boolean>(true);
-  const [nim, setNim] = useState<number>();
-  const [se, setSe] = useState<string>(search);
+
+  // handle nim
+  useEffect(() => {
+    async function fetchData() {
+      const data = await getData({ search });
+      if (data) {
+        setIpk(data.ipk);
+
+        if (data.ipk >= 3) {
+          setBlock(false);
+        } else if (data.ipk <= 3) {
+          setBlock(true);
+        }
+      } else {
+        setIpk("0");
+      }
+    }
+
+    fetchData();
+  }, [search]);
 
   return (
-    <form action={action} className="space-y-3 my-[40px]">
+    <form action={action} className="space-y-3 my-[40px]" >
       <div className="flex-1 rounded border-spacing-10 border shadow px-6 pb-4 pt-8">
         <div className="w-full">
           {/* nim */}
@@ -74,32 +106,32 @@ export default function LoginForm({search}:{search:string;}) {
             >
               NIM
             </label>
-            <Search placeholder="NIM" />
+            <Search placeholder="NIM" search={search} />
             <input
               className="hidden"
               id="nim"
               type="string"
               name="nim"
               required
-              value={search}
+              defaultValue={search}
             />
           </div>
           {/* nama depan nama belakang */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 md:gap-3">
             {/* nama depan */}
             <div>
               <label
                 className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-                htmlFor="nama-depan"
+                htmlFor="namaDepan"
               >
                 NAMA DEPAN
               </label>
               <div className="relative">
                 <input
                   className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-5 text-sm outline-2 placeholder:text-gray-500"
-                  id="nama-depan"
+                  id="namaDepan"
                   type="text"
-                  name="nama-depan"
+                  name="namaDepan"
                   placeholder="Nama depan"
                   required
                 />
@@ -110,16 +142,16 @@ export default function LoginForm({search}:{search:string;}) {
             <div>
               <label
                 className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-                htmlFor="nama-belakang"
+                htmlFor="namaBelakang"
               >
                 NAMA BELAKANG
               </label>
               <div className="relative">
                 <input
                   className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-5 text-sm outline-2 placeholder:text-gray-500"
-                  id="nama-belakang"
+                  id="namaBelakang"
                   type="text"
-                  name="nama-belakang"
+                  name="namaBelakang"
                   placeholder="Nama belakang"
                   required
                 />
@@ -149,16 +181,16 @@ export default function LoginForm({search}:{search:string;}) {
           <div>
             <label
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="no-hp"
+              htmlFor="noHp"
             >
               NO HP
             </label>
             <div className="relative">
               <input
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-14 text-sm outline-2 placeholder:text-gray-500"
-                id="no-hp"
+                id="noHp"
                 type="number"
-                name="no-hp"
+                name="noHp"
                 placeholder="Masukkan no hp"
                 required
               />
@@ -211,7 +243,7 @@ export default function LoginForm({search}:{search:string;}) {
                 name="ipk"
                 required
                 disabled
-                value={ipk}
+                defaultValue={ipk}
               />
             </div>
           </div>
@@ -231,6 +263,7 @@ export default function LoginForm({search}:{search:string;}) {
                 aria-placeholder="Pilih beasiswa"
                 required
                 defaultValue={0}
+                disabled={block}
               >
                 <option value={0} disabled>
                   Pilih Beasiswa
@@ -258,7 +291,8 @@ export default function LoginForm({search}:{search:string;}) {
                 type="file"
                 name="berkas"
                 required
-                accept=".pdf,.jpg,,.zip"
+                accept=".pdf,.jpg,.zip,"
+                disabled={block}
               />
               <div className="text-xs text-red-500" id="berkasError">
                 Only PDF, JPG, and ZIP files are allowed.
@@ -266,17 +300,24 @@ export default function LoginForm({search}:{search:string;}) {
             </div>
           </div>
         </div>
-        <div className="flex justify-end gap-3">
+        <div className="flex justify-end gap-3 mt-3 md:mt-auto">
           <CancelButton />
           <LoginButton block={block} />
         </div>
         <div className="flex h-8 items-end space-x-1">
           {code !== undefined && (
             <>
-              <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-              <p aria-live="polite" className="text-sm text-red-500">
-                {code.message}
-              </p>
+              <div className="flex flex-row items-start gap-3">
+                <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
+                <div className="flex flex-col">
+                  <p aria-live="polite" className="text-sm text-red-500">
+                    {code.message}
+                  </p>
+                  <p aria-live="polite" className="text-sm text-red-500">
+                    {code.err}
+                  </p>
+                </div>
+              </div>
             </>
           )}
         </div>
@@ -290,7 +331,7 @@ function LoginButton({ block }: { block: boolean }) {
 
   return (
     <ButtonForm
-      className="mt-4 bg-green-500 hover:bg-green-600 w-[15%] justify-center focus-visible:outline-green-500 active:bg-green-600"
+      className="mt-4 bg-green-500 hover:bg-green-600 justify-center focus-visible:outline-green-500 active:bg-green-600"
       aria-disabled={pending ? pending : block}
     >
       Daftar
@@ -302,7 +343,7 @@ function CancelButton() {
   return (
     <Link
       href="/"
-      className="flex h-10 items-center rounded-lg px-4 text-sm font-medium text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 active:bg-red-600 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 mt-4 bg-red-500 hover:bg-red-600 w-[15%] justify-center"
+      className="flex w-full md:w-[15%] py-3 md:px-14 items-center rounded shadow text-sm font-medium text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 active:bg-red-600 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 mt-4 bg-red-500 hover:bg-red-600 justify-center"
     >
       Cancel{" "}
     </Link>

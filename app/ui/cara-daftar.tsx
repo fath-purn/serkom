@@ -9,17 +9,16 @@ import Banner_4 from "@/public/img/beranda_4.png";
 export default function CaraDaftar() {
 
   return (
-      <div className="flex justify-center mt-[50px]">
-        <div className="w-[80%]">
+      <div className="flex justify-center mt-[150px] md:mt-[50px]">
+        <div className="w-[95%] md:w-[80%]">
           <div className="flex justify-center">
-            <h3 className="text-center text-2xl font-medium w-[70%]">
-              Temukan kesempatan beasiswa yang tepat untuk mewujudkan impian
-              Anda
+            <h3 className="text-center text-lg md:text-2xl font-medium w-[80%] md:w-[70%]">
+              Temukan kesempatan beasiswa yang tepat untuk mewujudkan impianmu
             </h3>
           </div>
           {/* Atas */}
-          <div className="flex flex-row gap-3 justify-center mt-[130px]">
-            <div className="w-[50%] flex flex-col items-center bg-[#F9E8C9] h-[250px] rounded shadow">
+          <div className="flex flex-col md:flex-row gap-3 justify-center mt-[130px]">
+            <div className="md:w-[50%] flex flex-col items-center md:bg-[#F9E8C9] bg-[#98ABEE] h-[250px] rounded shadow">
               <Image
                 alt={"banner_1"}
                 src={Banner_1}
@@ -30,7 +29,7 @@ export default function CaraDaftar() {
                 Temukan beasiswa pilihan
               </p>
             </div>
-            <div className="w-[50%] flex flex-col items-center bg-[#98ABEE] h-[250px] rounded shadow relative top-16">
+            <div className="md:w-[50%] flex flex-col items-center  md:bg-[#98ABEE] bg-[#F9E8C9] h-[250px] rounded shadow relative top-16 mt-5 md:mt-0">
               <Image
                 alt={"banner_2"}
                 src={Banner_2}
@@ -43,8 +42,8 @@ export default function CaraDaftar() {
             </div>
           </div>
           {/* Bawah */}
-          <div className="flex flex-row gap-3 justify-center mt-[135px]">
-            <div className="w-[50%] flex flex-col items-center bg-[#98ABEE] h-[250px] rounded shadow">
+          <div className="flex flex-col md:flex-row gap-3 justify-center mt-[145px] md:mt-[135px]">
+            <div className="md:w-[50%] flex flex-col items-center bg-[#98ABEE] h-[250px] rounded shadow">
               <Image
                 alt={"banner_3"}
                 src={Banner_3}
@@ -55,7 +54,7 @@ export default function CaraDaftar() {
                 Submit pada form pendaftaran
               </p>
             </div>
-            <div className="w-[50%] flex flex-col items-center bg-[#F9E8C9] h-[250px] rounded shadow relative top-20">
+            <div className="md:w-[50%] flex flex-col items-center bg-[#F9E8C9] h-[250px] rounded shadow relative top-20 mt-5 md:mt-0">
               <Image
                 alt={"banner_4"}
                 src={Banner_4}

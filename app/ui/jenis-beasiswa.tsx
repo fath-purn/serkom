@@ -26,7 +26,7 @@ const beasiswa = [
 
 export default function JenisBeasiswa() {
   return (
-    <div className="grid grid-cols-2 gap-3 mt-[40px]">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-[40px]">
       {beasiswa.map((item) => (
         <div key={item.judul} className={`flex flex-col ${item.class} p-5 rounded shadow`}>
           <Image

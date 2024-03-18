@@ -12,8 +12,8 @@ export default function Page() {
     <main className="">
       {/* top */}
       <div className="flex justify-center">
-        <div className="flex flex-row items-center w-[80%] md:min-h-[650px] md:max-h-[650px]">
-          <h1 className="text-8xl text-black w-[50%] font-semibold tracking-wider z-10">
+        <div className="flex flex-row items-center w-[95%] md:w-[80%] md:min-h-[650px] md:max-h-[650px]">
+          <h1 className="text-4xl md:text-8xl text-black w-[50%] font-semibold tracking-wider z-10 top-[50%] md:top-0 relative ">
             Pilihan Beasiswa Mahasiswa
           </h1>
           <Image
@@ -21,7 +21,7 @@ export default function Page() {
             src={Banner}
             quality={100}
             fill
-            className={`max-h-[600px] absolute top-0 left-0`}
+            className={`max-h-[250px] md:max-h-[600px] absolute top-0 left-0 object-cover`}
           />
         </div>
       </div>
@@ -31,8 +31,8 @@ export default function Page() {
 
       {/* Jenis Beasiswa */}
       <div className="flex justify-center mt-[150px]">
-        <div className="w-[80%]">
-          <h2 className="text-6xl font-semibold text-center">
+        <div className="w-[95%] md:w-[80%]">
+          <h2 className="text-4xl md:text-6xl font-semibold text-center">
             Jenis <span className="text-[#1D24CA]">Beasiswa</span>
           </h2>
           <JenisBeasiswa />

@@ -6,13 +6,13 @@ export default function Footer() {
   return (
     <div className="flex justify-center bg-[#F9E8C9] py-[40px]">
       <div className="w-[80%]">
-        <h4 className="text-4xl font-bold tracking-[1rem]">HAIIIII</h4>
-        <div className="grid grid-cols-2">
+        <h4 className="text-3xl md:text-4xl font-bold tracking-[1rem]">HAIIIII</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2">
           <div>
-            <h5 className="text-2xl tracking-wide mt-10">
+            <h5 className="text-xl md:text-2xl tracking-wide mt-10">
               Pusat Layanan Informasi Beasiswa{" "}
             </h5>
-            <p className="text-base tracking-wide mt-10">
+            <p className="text-base tracking-wide mt-5 md:mt-10">
               Pusat Layanan Pembiayaan Pendidikan
             </p>
             <p className="text-base tracking-wide mt-1">
@@ -28,8 +28,8 @@ export default function Footer() {
             </p>
           </div>
           <div>
-            <h5 className="text-2xl tracking-wide mt-10">Tautan Terkait</h5>
-            <div className="flex flex-col mt-10">
+            <h5 className="text-xl md:text-2xl tracking-wide mt-10">Tautan Terkait</h5>
+            <div className="flex flex-col mt-5 md:mt-10">
               <Link href={"/"} className="text-base tracking-wide w-fit">
                 IT Telkom{" "}
               </Link>
