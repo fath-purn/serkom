@@ -1,21 +1,34 @@
 import Image from "next/image";
 
-// import local
+// Import gambar komponen lokal
 import Footer from "@/app/ui/footer";
 import Bantuan from "@/app/ui/bantuan";
 import Banner from "@/public/img/baner.png";
 import JenisBeasiswa from "@/app/ui/jenis-beasiswa";
 import CaraDaftar from "@/app/ui/cara-daftar";
 
-export default function Page() {
+/**
+ * Halaman utama aplikasi.
+ *
+ * @returns {JSX.Element} Komponen halaman utama.
+ * @description Komponen ini menampilkan halaman utama aplikasi, termasuk judul, banner,
+ *              informasi cara daftar, jenis beasiswa, bantuan, dan footer.
+ * @author Fatkhurrohman Purnomo / @fath-purn
+ * @version 1.0
+ * @date 18 Maret 2024
+ */
+export default function Page(): JSX.Element {
   return (
     <main className="">
-      {/* top */}
+      {/* Bagian atas */}
       <div className="flex justify-center">
         <div className="flex flex-row items-center w-[95%] md:w-[80%] md:min-h-[650px] md:max-h-[650px]">
+          {/* Judul */}
           <h1 className="text-4xl md:text-8xl text-black w-[50%] font-semibold tracking-wider z-10 top-[50%] md:top-0 relative ">
             Pilihan Beasiswa Mahasiswa
           </h1>
+
+          {/* Banner */}
           <Image
             alt={"banner"}
             src={Banner}
@@ -26,10 +39,10 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Cara Daftar */}
+      {/* Bagian Cara Daftar */}
       <CaraDaftar />
 
-      {/* Jenis Beasiswa */}
+      {/* Bagian Jenis Beasiswa */}
       <div className="flex justify-center mt-[150px]">
         <div className="w-[95%] md:w-[80%]">
           <h2 className="text-4xl md:text-6xl font-semibold text-center">
@@ -39,10 +52,10 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Bantuan */}
+      {/* Bagian Bantuan */}
       <Bantuan />
 
-      {/* Footer */}
+      {/* Bagian Footer */}
       <Footer />
     </main>
   );

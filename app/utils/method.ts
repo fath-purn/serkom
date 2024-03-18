@@ -1,9 +1,23 @@
-import { mahasiswa, } from "@/app/utils/validation";
+/**
+ * @Deskripsi Mengirim data mahasiswa baru ke server.
+ * 
+ * @param _provider Provider untuk autentikasi, tidak digunakan dalam fungsi ini.
+ * @param data Objek yang berisi data mahasiswa yang akan disimpan.
+ * 
+ * Initial state: -
+ * Final state: Objek yang berisi respons dari server setelah data mahasiswa berhasil atau gagal disimpan.
+ * 
+ * @Author Fatkhurrohman Purnomo / @fath-purn
+ * @date 18 Maret 2024
+ */
+
+import { mahasiswa } from "@/app/utils/validation";
 
 export const POSTMAHASISWA = async (_provider: string, data: any) => {
+  // Mengambil berkas dari data
   const file = [data.berkas];
-  console.log(file, 'file')
 
+  // Validasi data mahasiswa menggunakan schema 'mahasiswa'
   const validasi = mahasiswa.safeParse({
     nim: Number(data.nim),
     namaDepan: data.namaDepan,
@@ -14,6 +28,7 @@ export const POSTMAHASISWA = async (_provider: string, data: any) => {
     beasiswa: Number(data.beasiswa),
   });
 
+  // Mendefinisikan nilai 'beasiswaValue' berdasarkan data 'beasiswa' agar sesuai dengan data yang diinginkan api
   let beasiswaValue;
   if (Number(data.beasiswa) === 1) {
     beasiswaValue = "akademik";
@@ -23,9 +38,12 @@ export const POSTMAHASISWA = async (_provider: string, data: any) => {
     beasiswaValue = "nilai_tidak_valid";
   }
 
+  // Jika validasi berhasil
   if (validasi.success) {
+    // Membuat FormData untuk mengirim data ke server
     const formData = new FormData();
 
+    // Menambahkan data mahasiswa ke FormData
     formData.append("nim", data.nim.toString());
     formData.append("nama_depan", data.namaDepan);
     formData.append("nama_belakang", data.namaBelakang);
@@ -36,17 +54,20 @@ export const POSTMAHASISWA = async (_provider: string, data: any) => {
     formData.append("status", "Pending");
     formData.append("file", file[0]);
 
+    // Mengirim data mahasiswa ke server menggunakan fetch API
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/beasiswa/add`, {
       method: "POST",
       body: formData,
     });
 
+    // Mendapatkan respons dari server dalam format JSON
     const dataJson = await res.json();
-    console.log(dataJson, 'data')
 
+    // Jika terjadi kesalahan dalam pengiriman
     if (!res) {
       return { success: false, message: "Terjadi kesalahan" };
     }
+    // Jika respons berhasil (status kode 200 atau 201)
     if (res.status === 200 || res.status === 201) {
       return dataJson;
     } else {

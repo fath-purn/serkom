@@ -1,11 +1,19 @@
 import Link from "next/link";
 import clsx from 'clsx';
 
+/**
+ * Props untuk komponen tombol.
+ */
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
 }
 
-export function ButtonNavbar() {
+/**
+ * Komponen tombol untuk navbar.
+ * 
+ * @returns {JSX.Element} Tombol navbar.
+ */
+export function ButtonNavbar(): JSX.Element {
   return (
     <div className="flex items-center">
       <Link
@@ -18,7 +26,14 @@ export function ButtonNavbar() {
   );
 }
 
-export function Button({nama, link}:{nama:string; link:string}) {
+/**
+ * Komponen tombol dengan nama dan link tertentu.
+ * 
+ * @param {string} nama - Nama tombol.
+ * @param {string} link - Link tujuan tombol.
+ * @returns {JSX.Element} Tombol dengan nama dan link tertentu.
+ */
+export function Button({nama, link}:{nama:string; link:string}): JSX.Element {
   return (
     <div className="flex items-center">
       <Link
@@ -31,9 +46,13 @@ export function Button({nama, link}:{nama:string; link:string}) {
   );
 }
 
-
-
-export function ButtonForm({ children, className, ...rest }: ButtonProps) {
+/**
+ * Komponen tombol untuk formulir.
+ * 
+ * @param {ButtonProps} props - Props untuk komponen tombol.
+ * @returns {JSX.Element} Tombol untuk formulir.
+ */
+export function ButtonForm({ children, className, ...rest }: ButtonProps): JSX.Element {
   return (
     <button
       {...rest}

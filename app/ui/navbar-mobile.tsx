@@ -8,6 +8,7 @@ import Icon from "@mdi/react";
 import { mdiMenu } from "@mdi/js";
 import { useState } from "react";
 
+// Array link navbar
 const links = [
   { name: "Beranda", href: "/" },
   {
@@ -20,21 +21,35 @@ const links = [
   },
 ];
 
-export default function NavlinkMobile() {
+/**
+ * Komponen untuk menampilkan navigasi pada tampilan mobile.
+ * 
+ * @returns {JSX.Element} Komponen navigasi pada tampilan mobile.
+ * @author Fatkhurrohman Purnomo / @fath-purn
+ * @version 1.0
+ * @date 18 Maret 2024
+ */
+export default function NavlinkMobile(): JSX.Element {
+  // Mendapatkan path saat ini
   const pathname = usePathname();
   const trimmedPathname = pathname.substring(0, pathname.indexOf("/", 1));
   const [menu, setMenu] = useState<boolean>(false);
 
   return (
     <div>
+      {/* Tombol menu */}
       <div className="flex justify-end bottom-[18px] relative">
         <button onClick={() => setMenu(!menu)}>
           <Icon path={mdiMenu} size={1} color="black" className="" />
         </button>
       </div>
+
+      {/* Tampilan menu saat aktif */}
       {menu && (
         <div className="flex flex-col items-center py-3">
+          {/* Membuat link untuk setiap navigasi */}
           {links.map((link) => {
+            // Menentukan apakah link aktif
             const isActive =
               pathname === link.href || trimmedPathname === link.href;
             return (
@@ -51,12 +66,16 @@ export default function NavlinkMobile() {
                 onClick={() => setMenu(!menu)}
               >
                 <p className="tracking-wider">{link.name}</p>
+                
+                {/* Menampilkan indikator aktif */}
                 {isActive && (
                   <div className="w-[6px] h-[6px] bg-blue-700 rounded-full"></div>
                 )}
               </Link>
             );
           })}
+          
+          {/* Tombol daftar */}
           <ButtonNavbar />
         </div>
       )}

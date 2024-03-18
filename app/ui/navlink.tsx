@@ -16,14 +16,24 @@ const links = [
   },
 ];
 
-export default function Navlink() {
+/**
+ * Komponen untuk menampilkan tautan navigasi.
+ *
+ * @returns {JSX.Element} Komponen tautan navigasi.
+ * @author Fatkhurrohman Purnomo / @fath-purn
+ * @version 1.0
+ * @date 18 Maret 2024
+ */
+export default function Navlink(): JSX.Element {
+  // Mendapatkan path saat ini
   const pathname = usePathname();
   const trimmedPathname = pathname.substring(0, pathname.indexOf("/", 1));
-  // const isScreen = useMediaQuery('(max-width:880px)');
 
   return (
     <>
+      {/* Membuat link untuk setiap navigasi */}
       {links.map((link) => {
+        // Menentukan apakah link aktif
         const isActive =
           pathname === link.href || trimmedPathname === link.href;
         return (
@@ -39,9 +49,11 @@ export default function Navlink() {
             )}
           >
             <p className="hidden md:block tracking-wider">{link.name}</p>
-              {isActive && (
-                <div className="w-[6px] h-[6px] bg-blue-700 rounded-full"></div>
-              )}
+
+            {/* Menampilkan indikator aktif */}
+            {isActive && (
+              <div className="w-[6px] h-[6px] bg-blue-700 rounded-full"></div>
+            )}
           </Link>
         );
       })}

@@ -1,41 +1,55 @@
 "use client";
 
-import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
-import { ButtonForm } from "@/app/ui/button";
-import { useFormState, useFormStatus } from "react-dom";
-import { formSubmitHandlerMahasiswa } from "@/app/utils/actions";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import clsx from "clsx";
 import Search from "@/app/ui/search";
 
+// Deklarasi tipe data
 interface Semester {
   id: number;
   nama: number;
 }
 
+// Deklarasi tipe data
 interface Beasiswa {
   id: number;
   nama: string;
 }
 
-// fetch data nim
+// Fungsi untuk mengambil data mahasiswa berdasarkan NIM
 async function getData({ search }: { search: string }) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/beasiswa?search=${search}`,
     { cache: "no-store" }
   );
 
+  // jika data / server error
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }
 
+  // jika berhasil data akan dikirim balik ke pemanggil
   const data = await res.json();
   return data.data;
 }
 
-export default function LoginForm({ search }: { search: string }) {
-  const [code, action] = useFormState(formSubmitHandlerMahasiswa, undefined);
+/**
+ * Deskripsi: Komponen untuk menampilkan data mahasiswa yang telah terdaftar dengan status pendaftaran.
+ *
+ * @description Komponen untuk melihat status dan data mahasiswa yang terdaftar
+ * @param search Pencarian untuk mendapatkan data mahasiswa berdasarkan NIM.
+ *
+ * Initial state: Menampilkan data mahasiswa yang telah terdaftar.
+ * Final state: Menampilkan hasil mahasiswa
+ *
+ * @returns {JSX.Element} Komponen formulir.
+ * @author Fatkhurrohman Purnomo / @fath-purn
+ * @version 1.0
+ * @date 18 Maret 2024
+ */
+export default function LoginForm({ search }: { search: string }): JSX.Element {
+  // state untuk menampung data semestara
   const [ipk, setIpk] = useState<string>("0");
   const [namaDepan, setNamaDepan] = useState<string>("");
   const [namaBelakang, setNamaBelakang] = useState<string>("");
@@ -47,11 +61,16 @@ export default function LoginForm({ search }: { search: string }) {
   const [status, setStatus] = useState<string>();
   const [statusAsli, setStatusAsli] = useState<string>();
 
-  // handle nim
+  // Mengambil data mahasiswa saat komponen dimuat
   useEffect(() => {
+    // Memanggil fungsi dan menyimpan hasilnya
     async function fetchData() {
+      // Memanggil fungsi
       const data = await getData({ search });
+
+      // Jika tidak ada data yang dikembalikan
       if (data) {
+        // Mengatur data mahasiswa ke state
         setIpk(data.nilai.ipk);
         setNamaDepan(data.nama_depan);
         setNamaBelakang(data.nama_belakang);
@@ -61,12 +80,14 @@ export default function LoginForm({ search }: { search: string }) {
         setBerkas(data.media[0].url);
         setStatusAsli(data.status);
 
+        // Mengatur data beasiswa
         if (data.beasiswa === "akademik") {
           setBeasiswa([{ id: 1, nama: "Akademik" }]);
         } else if (data.beasiswa === "non_akademik") {
           setBeasiswa([{ id: 1, nama: "Non-Akademik" }]);
         }
 
+        // Mengatur status pendaftaran
         switch (data.status) {
           case "Belum_daftar":
             setStatus("Belum Terdaftar");
@@ -81,17 +102,18 @@ export default function LoginForm({ search }: { search: string }) {
             setStatus("Ditolak");
             break;
           default:
-            setStatus("404 Server Error")
+            setStatus("404 Server Error");
             break;
         }
       }
     }
 
+    // memanggil fungsi
     fetchData();
   }, [search]);
 
   return (
-    <form action={action} className="space-y-3 my-[40px]">
+    <form action={""} className="space-y-3 my-[40px]">
       <div className="flex-1 rounded border-spacing-10 border shadow px-6 pb-4 pt-8">
         <div className="w-full">
           {/* Status pendaftaran */}
@@ -99,115 +121,131 @@ export default function LoginForm({ search }: { search: string }) {
             <h5 className="text-lg md:text-xl font-medium tracking-wide">
               STATUS PENDAFTARAN
             </h5>
-            <p className={clsx(
-              ' text-white font-medium w-fit rounded shadow py-2 px-7 mt-3 tracking-wider', 
-              {
-                'bg-gray-500': statusAsli === "Belum_daftar",
-                'bg-yellow-500': statusAsli === "Pending",
-                'bg-green-500': statusAsli === "Diterima",
-                'bg-red-500': statusAsli === "Ditolak",
-              } 
-            )}>
-              {status}
-            </p>
+
+            {/* Menampilkan status pendaftaran */}
+            {status && (
+              <p
+                className={clsx(
+                  " text-white font-medium w-fit rounded shadow py-2 px-7 mt-3 tracking-wider",
+                  {
+                    "bg-gray-500": statusAsli === "Belum_daftar",
+                    "bg-yellow-500": statusAsli === "Pending",
+                    "bg-green-500": statusAsli === "Diterima",
+                    "bg-red-500": statusAsli === "Ditolak",
+                  }
+                )}
+              >
+                {status}
+              </p>
+            )}
           </div>
-          {/* nim */}
+
+          {/* Input NIM */}
           <div>
+            {/* Label NIM */}
             <label
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="nim"
             >
               NIM
             </label>
+
+            {/* Mencari data sesuai NIM */}
             <Search placeholder="NIM" search={search} />
-            <input
-              className="hidden"
-              id="nim"
-              type="string"
-              name="nim"
-              required
-              value={search}
-            />
+
+            {/* Menyimpan NIM untuk diteruskan ke server */}
+            <input className="hidden" value={search} />
           </div>
-          {/* nama depan nama belakang */}
+
+          {/* Data Nama Depan dan Nama Belakang */}
           <div className="grid grid-cols-1 md:grid-cols-2 md:gap-3">
-            {/* nama depan */}
+            {/* Data Nama Depan */}
             <div>
+              {/* Label Nama Depan */}
               <label
                 className="mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="namaDepan"
               >
                 NAMA DEPAN
               </label>
+
+              {/* Data Nama Depan */}
               <div className="relative">
                 <input
                   className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-5 text-sm outline-2 placeholder:text-gray-500"
                   id="namaDepan"
                   type="text"
                   name="namaDepan"
-                  required
                   disabled
                   defaultValue={namaDepan}
                 />
               </div>
             </div>
 
-            {/* nama belakang */}
+            {/* Data Nama Belakang */}
             <div>
+              {/* Label Nama Belakang */}
               <label
                 className="mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="namaBelakang"
               >
                 NAMA BELAKANG
               </label>
+
+              {/* Data Nama Belakang */}
               <div className="relative">
                 <input
                   className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-5 text-sm outline-2 placeholder:text-gray-500"
                   id="namaBelakang"
                   type="text"
                   name="namaBelakang"
-                  required
                   disabled
                   defaultValue={namaBelakang}
                 />
               </div>
             </div>
           </div>
-          {/* email */}
+
+          {/* Data Email */}
           <div>
+            {/* Label Email */}
             <label
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="email"
             >
               EMAIL
             </label>
+
+            {/* Data Email*/}
             <div className="relative">
               <input
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-5 text-sm outline-2 placeholder:text-gray-500"
                 id="email"
                 type="email"
                 name="email"
-                required
                 disabled
                 defaultValue={email}
               />
             </div>
           </div>
-          {/* no hp */}
+
+          {/* Data No HP */}
           <div>
+            {/* Label No HP */}
             <label
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="noHp"
             >
               NO HP
             </label>
+
+            {/* Data No HP */}
             <div className="relative">
               <input
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-14 text-sm outline-2 placeholder:text-gray-500"
                 id="noHp"
                 type="number"
                 name="noHp"
-                required
                 disabled
                 defaultValue={noHp}
               />
@@ -216,20 +254,23 @@ export default function LoginForm({ search }: { search: string }) {
               </p>
             </div>
           </div>
-          {/* semester */}
+
+          {/* Data Semester */}
           <div>
+            {/* Label Semester */}
             <label
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="semester"
             >
               SEMESTER
             </label>
+
+            {/* Data Semester */}
             <div className="relative">
               <select
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-5 text-sm outline-2 placeholder:text-gray-500"
                 id="semester"
                 name="semester"
-                required
                 defaultValue={1}
                 disabled
               >
@@ -244,40 +285,46 @@ export default function LoginForm({ search }: { search: string }) {
               </select>
             </div>
           </div>
-          {/* ipk */}
+
+          {/* Data IPK */}
           <div>
+            {/* Label IPK */}
             <label
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="ipk"
             >
               IPK
             </label>
+
+            {/* Data IPK */}
             <div className="relative">
               <input
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-5 text-sm outline-2 placeholder:text-gray-500"
                 id="ipk"
                 type="text"
                 name="ipk"
-                required
                 disabled
                 defaultValue={ipk}
               />
             </div>
           </div>
-          {/* beasiswa */}
+
+          {/* Data Beasiswa */}
           <div>
+            {/* Label Beasiswa */}
             <label
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="beasiswa"
             >
               BEASISWA
             </label>
+
+            {/* Data Beasiswa */}
             <div className="relative">
               <select
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-5 text-sm outline-2 placeholder:text-gray-500"
                 id="beasiswa"
                 name="beasiswa"
-                required
                 defaultValue={1}
                 disabled
               >
@@ -292,14 +339,18 @@ export default function LoginForm({ search }: { search: string }) {
               </select>
             </div>
           </div>
-          {/* berkas */}
+
+          {/* Data Berkas */}
           <div>
+            {/* Label Berkas */}
             <label
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="berkas"
             >
               Berkas
             </label>
+
+            {/* Link Berkas */}
             <div className="relative">
               <input
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-5 text-sm outline-2 placeholder:text-gray-500"
@@ -319,16 +370,6 @@ export default function LoginForm({ search }: { search: string }) {
           </div>
         </div>
         <div className="flex justify-end gap-3"></div>
-        <div className="flex h-8 items-end space-x-1">
-          {code !== undefined && (
-            <>
-              <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-              <p aria-live="polite" className="text-sm text-red-500">
-                {code.message}
-              </p>
-            </>
-          )}
-        </div>
       </div>
     </form>
   );
