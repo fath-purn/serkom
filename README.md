@@ -41,6 +41,6 @@ Cara menjalankan development server:
     # or
     bun dev
     ```
-5. Buka [http://localhost:3000](http://localhost:3000) pada browser 
+5. Buka [http://localhost:3000](http://localhost:3000) pada browser dan untuk mengedit fungsi bisa pada folder app
 
 Maka project sudah dapat dijalankan di development server.
