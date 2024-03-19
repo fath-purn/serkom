@@ -67,9 +67,10 @@ export default function LoginForm({ search }: { search: string }): JSX.Element {
     async function fetchData() {
       // Memanggil fungsi
       const data = await getData({ search });
+      console.log(data, 'adsf')
 
       // Jika tidak ada data yang dikembalikan
-      if (data) {
+      if (data !== null) {
         // Mengatur data mahasiswa ke state
         setIpk(data.nilai.ipk);
         setNamaDepan(data.nama_depan);
@@ -105,6 +106,17 @@ export default function LoginForm({ search }: { search: string }): JSX.Element {
             setStatus("404 Server Error");
             break;
         }
+      } else {
+        setIpk("");
+        setNamaDepan("");
+        setNamaBelakang("");
+        setEmail("");
+        setSemester([{ id: 0, nama: 0 }]);
+        setNoHp(0);
+        setBerkas("");
+        setStatusAsli("");
+        setStatus("");
+        setBeasiswa([{ id: 1, nama: "" }]);
       }
     }
 

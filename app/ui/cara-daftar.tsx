@@ -35,7 +35,7 @@ export default function CaraDaftar(): JSX.Element {
               quality={100}
               className={`max-h-[130px] bottom-20 relative`}
             />
-            <p className="text-2xl font-medium w-[50%] text-center relative bottom-5">
+            <p className="text-2xl font-medium w-[80%] md:w-[50%] text-center relative bottom-5">
               Temukan beasiswa pilihan
             </p>
           </div>
@@ -48,7 +48,7 @@ export default function CaraDaftar(): JSX.Element {
               quality={100}
               className={`max-h-[130px] bottom-20 relative`}
             />
-            <p className="text-2xl font-medium w-[70%] text-center relative bottom-5">
+            <p className="text-2xl font-medium w-[80%] md:w-[70%] text-center relative bottom-5">
               Lengkapi administrasi pendaftaran
             </p>
           </div>
@@ -65,7 +65,7 @@ export default function CaraDaftar(): JSX.Element {
               quality={100}
               className={`max-h-[130px] bottom-20 relative`}
             />
-            <p className="text-2xl font-medium w-[50%] text-center relative bottom-5">
+            <p className="text-2xl font-medium w-[80%] md:w-[50%] text-center relative bottom-5">
               Submit pada form pendaftaran
             </p>
           </div>
@@ -78,7 +78,7 @@ export default function CaraDaftar(): JSX.Element {
               quality={100}
               className={`max-h-[130px] bottom-20 relative`}
             />
-            <p className="text-2xl font-medium w-[70%] text-center relative bottom-5">
+            <p className="text-2xl font-medium w-[80%] md:w-[70%] text-center relative bottom-5">
               Pengajuan beasiswa disetujui
             </p>
           </div>

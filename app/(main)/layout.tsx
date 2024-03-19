@@ -35,7 +35,7 @@ export default function RootLayout({
         {/* Navbar */}
         <Navbar />
         {/* Konten */}
-        <div className="relative top-[60px] md:top-[70px] bottom-[70px] md:bottom-0 bg-white text-[#262626]">
+        <div className="relative top-[45px] md:top-[70px] bottom-[70px] md:bottom-0 bg-white text-[#262626]">
           {children}
         </div>
       </body>
