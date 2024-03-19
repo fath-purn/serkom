@@ -33,7 +33,7 @@ export default function Bantuan(): JSX.Element {
           </p>
 
           {/* Tombol untuk bantuan */}
-          <Button nama="Bantuan" link="wa.me/6285155040590" />
+          <Button nama="Bantuan" link="https://wa.me/6285155040590" />
         </div>
       </div>
     </div>
